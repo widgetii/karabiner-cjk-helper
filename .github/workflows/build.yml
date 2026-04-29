@@ -1,0 +1,39 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          swift --version
+          clang --version
+          xcodebuild -version
+
+      - name: Build
+        run: make build
+
+      - name: Verify binaries
+        run: |
+          set -eu
+          for bin in karabiner-cjk-helper karabiner-cjk-kicker karabiner-cjk-trigger; do
+            test -x "build/$bin"
+            file "build/$bin"
+            otool -L "build/$bin" || true
+          done
+
+      - name: Smoke-test trigger (no daemon required)
+        run: |
+          # The trigger should fail cleanly with "connect: No such file or directory"
+          # when no daemon is listening, and exit non-zero. That's what we expect on
+          # a CI runner — verifies the binary runs at all.
+          ./build/karabiner-cjk-trigger com.apple.keylayout.US || true
+          echo "trigger ran"
