@@ -123,6 +123,15 @@ Karabiner reloads its config automatically when you save the file.
 make uninstall
 ```
 
+## Tests
+
+`tests/` contains diagnostic scripts (a live input-source poller, a
+TextEdit-driven multi-mechanism stress test, and a focused Russian↔Pinyin
+alternation test). See [tests/README.md](tests/README.md). They use
+synthetic events so they're not perfect simulations of real hardware
+typing, but they reproduce the same TIS/IME state machinery and catch
+most regressions.
+
 ## Reliability
 
 In a TextEdit-driven end-to-end test (synthetic keystrokes via
